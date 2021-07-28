@@ -74,5 +74,11 @@ jobs:
       uses: peter-murray/github-security-report-action@v2
       with:
         token: ${{ secrets.SECURITY_TOKEN }}
+        
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        path: /home/runner/work/workshop-yakitori-webgoat/workshop-yakitori-webgoat/summary.pdf
+
 
   
