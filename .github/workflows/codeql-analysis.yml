@@ -78,7 +78,8 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
-        path: /home/runner/work/workshop-yakitori-webgoat/workshop-yakitori-webgoat/summary.pdf
+        name: Summary-PDF
+        path: /home/runner/work/workshop-yakitori-webgoat/workshop-yakitori-webgoat/*.pdf
 
 
   
