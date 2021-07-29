@@ -20,7 +20,7 @@ on:
   schedule:
     - cron: '19 15 * * 1'
 
-jobs:
+jobs:       
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
@@ -55,16 +55,6 @@ jobs:
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
       uses: github/codeql-action/autobuild@v1
-        
-    - name: nodejsscan scan
-      id: njsscan
-      uses: ajinabraham/njsscan-action@master
-      with:
-        args: '. --sarif --output results.sarif || true'
-    - name: Upload njsscan report
-      uses: github/codeql-action/upload-sarif@v1
-      with:
-        sarif_file: results.sarif
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
@@ -102,5 +92,16 @@ jobs:
         # A file, directory or wildcard pattern that describes what to upload
         path: ${{ github.workspace }}/reports
 
-
-      
+  ossar-analyze:
+    name: Analyze OSSAR on windows
+    runs-on: windows-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2    
+    - name: Run OSSAR
+      uses: github/ossar-action@v1
+      id: ossar
+    - name: Upload results to Security tab
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: ${{ steps.ossar.outputs.sarifFile }}      
