@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'java', 'javascript' ]
+        language: [ 'javascript' ]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
         # Learn more:
         # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
@@ -69,3 +69,28 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
+    
+    - name: GitHub Security Report Action
+      # You may pin to the exact commit or the version.
+      # uses: peter-murray/github-security-report-action@61a0ff4dcb8340ea710754dd2fd87f6a5110fb06
+      uses: peter-murray/github-security-report-action@v2
+      with:
+        # GitHub Access Token with permissions for Dependencies and Security API access on the repository.
+        token: ${{ secrets.SECURITY_TOKEN }}
+        # The CodeQL output directory for SARIF report(s).
+        sarifReportDir: ../results
+        # The output directory for the generated report(s).
+        outputDir: ${{ github.workspace }}/reports
+        # Repository name with owner. For example, peter-murray/github-security-report
+        repository: ${{ github.repository }}
+        
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        # Artifact name
+        name: Upload security reports
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ${{ github.workspace }}/reports
+
+
+      
