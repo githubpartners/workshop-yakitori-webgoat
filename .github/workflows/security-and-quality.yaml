@@ -1,6 +1,0 @@
-name: "security-and-quality only"
-
-paths:
-  - docs
-queries:
-  - uses: security-and-quality
