@@ -20,7 +20,7 @@ on:
   schedule:
     - cron: '19 15 * * 1'
 
-jobs:
+jobs:       
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
@@ -69,7 +69,7 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
-    
+
     - name: GitHub Security Report Action
       # You may pin to the exact commit or the version.
       # uses: peter-murray/github-security-report-action@61a0ff4dcb8340ea710754dd2fd87f6a5110fb06
@@ -92,5 +92,46 @@ jobs:
         # A file, directory or wildcard pattern that describes what to upload
         path: ${{ github.workspace }}/reports
 
+  ossar-analyze:
+    name: Analyze OSSAR on windows
+    runs-on: windows-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2    
+    - name: Run OSSAR
+      uses: github/ossar-action@v1
+      id: ossar
+    - name: Upload results to Security tab
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: ${{ steps.ossar.outputs.sarifFile }}
+    - name: Upload a OSSAR Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        # Artifact name
+        name: Upload security reports
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ${{ steps.ossar.outputs.sarifFile }}     
 
-      
+  njsscan:
+    runs-on: ubuntu-latest
+    name: njsscan code scanning
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v2
+    - name: nodejsscan scan
+      id: njsscan
+      uses: ajinabraham/njsscan-action@master
+      with:
+        args: '. --sarif --output results.sarif || true'
+    - name: Upload njsscan report
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: results.sarif
+    - name: Upload a njsscan Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        # Artifact name
+        name: Upload security reports
+        # A file, directory or wildcard pattern that describes what to upload
+        path: results.sarif 
